@@ -5,9 +5,9 @@ import play.api.mvc._
 import play.api.cache.Cache
 import play.api.Play.current
 
-object Application extends Controller {
+object Init extends Controller {
 
-  def index = Action {
-    Ok(views.html.index(null))
+  def get = Action {
+    Ok(views.html.init("Init"))
   }
 }
