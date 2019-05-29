@@ -1,8 +1,11 @@
-@import components.init_quiz
+@import components.{generate_quiz, load_quiz}
 
 @(loadQuiz: String = "", generateQuiz: String = "", validQuizCodes: String = "", validQuizOptions: String = "")
 
 @main {
-  @init_quiz(loadQuiz, generateQuiz, validQuizCodes, validQuizOptions)
+  <div id="quiz-init">
+    @load_quiz(loadQuiz, validQuizCodes)
+    @generate_quiz(generateQuiz, validQuizOptions)
+  </div>
 }
 
