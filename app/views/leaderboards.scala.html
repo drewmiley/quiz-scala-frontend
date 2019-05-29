@@ -1,7 +1,5 @@
-@(message: String)
+@(leaderboardsData: String = "", getLeaderboards: String = "")
 
 @main {
-  <div class="container">
-    @message
-  </div>
+  @components.leaderboards(leaderboardsData, getLeaderboards)
 }

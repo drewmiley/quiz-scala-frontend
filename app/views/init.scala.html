@@ -1,7 +1,8 @@
-@(message: String)
+@import components.init_quiz
+
+@(loadQuiz: String = "", generateQuiz: String = "", validQuizCodes: String = "", validQuizOptions: String = "")
 
 @main {
-  <div class="container">
-    @message
-  </div>
+  @init_quiz(loadQuiz, generateQuiz, validQuizCodes, validQuizOptions)
 }
+
