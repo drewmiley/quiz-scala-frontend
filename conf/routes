@@ -3,8 +3,8 @@
 # ~~~~
 
 # Home page
-GET     /                           controllers.Init.get
-GET     /quiz                       controllers.Quiz.get
+GET     /                           @controllers.Init.get
+GET     /quiz                       @controllers.Quiz.get
 GET     /leaderboards               @controllers.Leaderboards.get
 GET     /api               @controllers.Leaderboards.showSomeSiteContent
 
