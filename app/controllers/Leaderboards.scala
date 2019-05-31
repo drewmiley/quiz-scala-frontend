@@ -14,7 +14,7 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
 
   def showSomeSiteContent = Action.async {
     service.getValidQuizOptions.map { validQuizOptions =>
-      Ok(validQuizOptions.category.head)
+      Ok(validQuizOptions.toString)
     }
   }
 }
