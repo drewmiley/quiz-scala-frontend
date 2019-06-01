@@ -10,7 +10,7 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
 
   def get = Action.async {
     service.getLeaderboardsByUser().map { leaderboards =>
-      Ok(views.html.leaderboards("Leaderboards"))
+      Ok(views.html.leaderboards(leaderboards))
     }
   }
 }

@@ -1,7 +1,8 @@
-@(leaderboardsData: String = "", getLeaderboards: String = "")
+@(leaderboardsData: Seq[Leaderboard], getLeaderboards: String = "")
 
 @main {
   <div id="leaderboards">
     <h2>LEADERBOARDS</h2>
+    @leaderboardsData.length
   </div>
 }
