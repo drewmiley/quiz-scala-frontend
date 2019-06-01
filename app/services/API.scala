@@ -1,7 +1,7 @@
 package services
 
 import javax.inject.Inject
-import models.{LeaderboardRow, ValidQuizOptions}
+import models._
 import play.api.Configuration
 import play.api.cache.{NamedCache, SyncCacheApi}
 import play.api.libs.json.Json
@@ -14,7 +14,9 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
   private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
-  private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/${code}"
+  private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/$code"
+  private def getLeaderboardsByUserEndpoint(user: String = "") =
+    s"${endpoint}leaderboards${if(user.nonEmpty) s"?user=$user" else ""}"
 
   def getValidQuizOptions: Future[ValidQuizOptions] = {
     def getViaApi: Future[ValidQuizOptions] =
@@ -44,6 +46,12 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
   def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] = {
     ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
       (Json.parse(response.body) \ "results").as[Seq[LeaderboardRow]]
+    }
+  }
+
+  def getLeaderboardsByUser(user: String = ""): Future[Seq[Leaderboard]] = {
+    ws.url(getLeaderboardsByUserEndpoint(user)).get().map { response =>
+      Json.parse(response.body).as[Seq[Leaderboard]]
     }
   }
 }
