@@ -1,17 +1,8 @@
+@import models.LeaderboardRow
+
 @(data: Leaderboard)
 
 @data.toString
 <div id="leaderboard">
-    <h2>@{data.code} LEADERBOARD</h2>
-    {props.leaderboard.sort((a, b) => b.score - a.score)
-        .reduce((acc, d) => {
-            const position = acc.length && d.score == acc[acc.length - 1].score ?
-            acc[acc.length - 1].position :
-            acc.length + 1;
-            return acc.concat([{ position, user: d.user, score: d.score }]);
-        }, [])
-        .map(d =>
-            <div key={d.user}>{d.position} - {d.user} - {d.score}</div>
-        )
-    }
+    <h2>@{data.code} LEADERBOARD</h2>-->
 </div>

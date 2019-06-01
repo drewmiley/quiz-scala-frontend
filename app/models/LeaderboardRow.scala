@@ -3,11 +3,11 @@ package models
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class LeaderboardRow(score: Int = 0, user: String = "")
+case class LeaderboardRow(score: Int = 0, user: String = "", position: Int = 0)
 
 object LeaderboardRow {
   implicit val reads: Reads[LeaderboardRow] = (
     (__ \ "score").read[Int] and
       (__ \ "user").read[String]
-    )(LeaderboardRow.apply _)
+    )((score, user) => LeaderboardRow.apply(score, user))
 }
