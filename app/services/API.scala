@@ -36,11 +36,9 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
         cache.set("validQuizCodes", validQuizCodes)
         validQuizCodes
       }
-    val cacheValue: Option[Seq[String]] = cache.get[Seq[String]]("validQuizCodes")
-    if (forceViaApi) {
-      getViaApi
-    } else {
-      cacheValue map { Future.successful } getOrElse getViaApi
+    (forceViaApi, cache.get[Seq[String]]("validQuizCodes")) match {
+      case (false, Some(validQuizCodes)) => Future.successful(validQuizCodes)
+      case _ => getViaApi
     }
   }
 

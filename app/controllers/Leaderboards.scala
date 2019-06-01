@@ -8,13 +8,9 @@ import scala.concurrent.ExecutionContext
 
 class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extends Controller {
 
-  def get = Action {
-    Ok(views.html.leaderboards("Leaderboards"))
-  }
-
-  def showSomeSiteContent = Action.async {
-    service.getValidQuizCodes().map { d =>
-      Ok(d.toString)
+  def get = Action.async {
+    service.getLeaderboardsByUser().map { leaderboards =>
+      Ok(views.html.leaderboards("Leaderboards"))
     }
   }
 }
