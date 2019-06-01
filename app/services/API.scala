@@ -14,6 +14,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
   private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
+  private def getQuizByCodeEndpoint(code: String) = s"${endpoint}quiz/$code"
   private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/$code"
   private def getLeaderboardsByUserEndpoint(user: String = "") =
     s"${endpoint}leaderboards${if(user.nonEmpty) s"?user=$user" else ""}"
@@ -42,6 +43,11 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
       cacheValue map { Future.successful } getOrElse getViaApi
     }
   }
+
+  def getQuizByCode(code: String): Future[Seq[Question]] =
+    ws.url(getQuizByCodeEndpoint(code)).get().map { response =>
+      Json.parse(response.body).as[Seq[Question]]
+    }
 
   def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] =
     ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
