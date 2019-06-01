@@ -13,8 +13,8 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
   }
 
   def showSomeSiteContent = Action.async {
-    service.getValidQuizCodes().map { validQuizCodes =>
-      Ok(validQuizCodes.toString)
+    service.getLeaderboardByCode().map { d =>
+      Ok(d.toString)
     }
   }
 }

@@ -1,9 +1,9 @@
 package services
 
 import javax.inject.Inject
-import models.ValidQuizOptions
+import models.{LeaderboardRow, ValidQuizOptions}
 import play.api.Configuration
-import play.api.cache.{SyncCacheApi, NamedCache}
+import play.api.cache.{NamedCache, SyncCacheApi}
 import play.api.libs.json.Json
 import play.api.libs.ws._
 
@@ -14,6 +14,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
   private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
+  private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/${code}"
 
   def getValidQuizOptions: Future[ValidQuizOptions] = {
     def getViaApi: Future[ValidQuizOptions] =
@@ -37,6 +38,12 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
       getViaApi
     } else {
       cacheValue map { Future.successful } getOrElse getViaApi
+    }
+  }
+
+  def getLeaderboardByCode(code: String = "030520199308"): Future[Seq[LeaderboardRow]] = {
+    ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
+      (Json.parse(response.body) \ "results").as[Seq[LeaderboardRow]]
     }
   }
 }
