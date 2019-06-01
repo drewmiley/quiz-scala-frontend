@@ -3,7 +3,7 @@ package models
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
-case class LeaderboardRow(score: Int = 0, user: String = "", position: Int = 0)
+case class LeaderboardRow(score: Int = 0, user: String = "", position: Option[Int] = None)
 
 object LeaderboardRow {
   implicit val reads: Reads[LeaderboardRow] = (
