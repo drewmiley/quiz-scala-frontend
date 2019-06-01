@@ -13,6 +13,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
   private val endpoint = configuration.getString("api").getOrElse("http://localhost:8080/") + "api/"
 
   private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
+  private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
 
   def getValidQuizOptions: Future[ValidQuizOptions] = {
     def getViaApi: Future[ValidQuizOptions] =
@@ -22,5 +23,20 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
         validQuizOptions
       }
     cache.get[ValidQuizOptions]("validQuizOptions") map { Future.successful } getOrElse getViaApi
+  }
+
+  def getValidQuizCodes(forceViaApi: Boolean = false): Future[Seq[String]] = {
+    def getViaApi: Future[Seq[String]] =
+      ws.url(getValidQuizCodesEndpoint).get().map { response =>
+        val validQuizCodes = Json.parse(response.body).as[Seq[String]]
+        cache.set("validQuizCodes", validQuizCodes)
+        validQuizCodes
+      }
+    val cacheValue: Option[Seq[String]] = cache.get[Seq[String]]("validQuizCodes")
+    if (forceViaApi) {
+      getViaApi
+    } else {
+      cacheValue map { Future.successful } getOrElse getViaApi
+    }
   }
 }
