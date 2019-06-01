@@ -13,7 +13,7 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
   }
 
   def showSomeSiteContent = Action.async {
-    service.getLeaderboardByCode().map { d =>
+    service.getLeaderboardByCode("030520199308").map { d =>
       Ok(d.toString)
     }
   }

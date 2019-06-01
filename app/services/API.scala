@@ -41,7 +41,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
-  def getLeaderboardByCode(code: String = "030520199308"): Future[Seq[LeaderboardRow]] = {
+  def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] = {
     ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
       (Json.parse(response.body) \ "results").as[Seq[LeaderboardRow]]
     }
