@@ -43,15 +43,13 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
-  def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] = {
+  def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] =
     ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
       (Json.parse(response.body) \ "results").as[Seq[LeaderboardRow]]
     }
-  }
 
-  def getLeaderboardsByUser(user: String = ""): Future[Seq[Leaderboard]] = {
+  def getLeaderboardsByUser(user: String = ""): Future[Seq[Leaderboard]] =
     ws.url(getLeaderboardsByUserEndpoint(user)).get().map { response =>
       Json.parse(response.body).as[Seq[Leaderboard]]
     }
-  }
 }
