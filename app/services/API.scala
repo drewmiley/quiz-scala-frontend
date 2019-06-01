@@ -46,7 +46,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   def getQuizByCode(code: String): Future[Seq[Question]] =
     ws.url(getQuizByCodeEndpoint(code)).get().map { response =>
-      Json.parse(response.body).as[Seq[Question]]
+      (Json.parse(response.body) \ "quiz").as[Seq[Question]]
     }
 
   def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] =
