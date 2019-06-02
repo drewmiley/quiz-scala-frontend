@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject.Inject
+import models.{Leaderboard, LeaderboardRow}
 import play.api.mvc._
 import services.API
 
@@ -10,7 +11,11 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
 
   def get = Action.async {
     service.getLeaderboardsByUser().map { leaderboards =>
-      val leaderboardsWithPositions = leaderboards
+      val leaderboardsWithPositions = leaderboards.map { leaderboard =>
+        val positionedRows = leaderboard.rows
+            .sorted(Ordering.by[LeaderboardRow, Int](_.score).reverse)
+        Leaderboard(leaderboard.code, positionedRows)
+      }
 //      {props.leaderboard.sort((a, b) => b.score - a.score)
 //        .reduce((acc, d) => {
 //          const position = acc.length && d.score == acc[acc.length - 1].score ?
