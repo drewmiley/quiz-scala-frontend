@@ -1,7 +1,15 @@
-@(leaderboardsData: String = "", getLeaderboards: String = "")
+@import components.leaderboard
+
+@(leaderboardsData: Seq[Leaderboard], getLeaderboards: String = "")
 
 @main {
   <div id="leaderboards">
     <h2>LEADERBOARDS</h2>
+    @{leaderboardsData
+      .filter(d => d.rows.length > 0)
+      .map(d =>
+        leaderboard(d)
+      )
+    }
   </div>
 }

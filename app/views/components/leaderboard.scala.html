@@ -1,5 +1,8 @@
-@(message: String)
+@(data: Leaderboard)
 
-<div class="container">
-    @message
+<div id="leaderboard">
+    <h2>@{data.code} LEADERBOARD</h2>
+    @{data.rows.map(d =>
+        <div key="{d.user}">{d.positionAsString} - {d.user} - {d.score}</div>
+    )}
 </div>
