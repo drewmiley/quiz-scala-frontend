@@ -33,6 +33,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     def getViaApi: Future[Seq[String]] =
       ws.url(getValidQuizCodesEndpoint).get().map { response =>
         val validQuizCodes = Json.parse(response.body).as[Seq[String]]
+        cache.set("code", validQuizCodes.head)
         cache.set("validQuizCodes", validQuizCodes)
         validQuizCodes
       }
