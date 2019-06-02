@@ -14,22 +14,19 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
       val leaderboardsWithPositions = leaderboards.map { leaderboard =>
         val positionedRows = leaderboard.rows
             .sorted(Ordering.by[LeaderboardRow, Int](_.score).reverse)
+            .zipWithIndex
+            .foldLeft(Seq[(LeaderboardRow, Int)]())((acc, d) => {
+              val row = d._1
+              val position: Int = if (acc.nonEmpty && row.score == acc.last._1.score) {
+                acc.last._1.position.get
+              } else {
+                acc.length + 1
+              }
+              acc :+ (LeaderboardRow(row.score, row.user, Some(position)), d._2)
+            })
+            .map(_._1)
         Leaderboard(leaderboard.code, positionedRows)
       }
-//      {props.leaderboard.sort((a, b) => b.score - a.score)
-//        .reduce((acc, d) => {
-//          const position = acc.length && d.score == acc[acc.length - 1].score ?
-//            acc[acc.length - 1].position :
-//            acc.length + 1;
-//          return acc.concat([{ position, user: d.user, score: d.score }]);
-//        }, [])
-//        .map(d =>
-//        <div key={d.user}>{d.position} - {d.user} - {d.score}</div>
-//      )
-//      }
-//      <!--@{data.results.map(d =>-->
-//        <!--<div key="@{d.user}">@{d.position} - @{d.user} - @{d.score}</div>-->
-//        <!--)}
       Ok(views.html.leaderboards(leaderboardsWithPositions))
     }
   }
