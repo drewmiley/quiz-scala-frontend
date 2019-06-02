@@ -1,5 +1,6 @@
-@(loadQuiz: String = "", validQuizCodes: String = "")
+@(loadQuiz: String = "", validQuizCodes: Seq[String])
 
 <div id="quiz-loader">
     <h4>LOAD QUIZ</h4>
+    @validQuizCodes.flatten
 </div>

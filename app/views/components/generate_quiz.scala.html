@@ -1,5 +1,6 @@
-@(generateQuiz: String = "", validQuizOptions: String = "")
+@(generateQuiz: String = "", validQuizOptions: ValidQuizOptions)
 
 <div id="quiz-generator">
     <h4>GENERATE QUIZ</h4>
+    @validQuizOptions.toString
 </div>

@@ -1,5 +1,8 @@
-@(message: String)
+@(code: String, questions: Seq[Question])
 
-<div class="container">
-    @message
+<div id="quiz-area">
+    <h4 id="quiz-code">Code: @code</h4>
+    @{questions.map(d =>
+        question(d)
+    )}
 </div>

@@ -1,7 +1,10 @@
-@(message: String)
+@import components.{quiz_area, leaderboard => lboard}
+
+@(code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard())
 
 @main {
   <div class="container">
-    @message
+    @quiz_area(code, questions)
+    @lboard(leaderboard)
   </div>
 }

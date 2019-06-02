@@ -1,15 +1,17 @@
 package controllers
 
 import javax.inject.Inject
-import models.ActionTypes
-import play.api.libs.ws.WSClient
 import play.api.mvc._
+import services.API
 
 import scala.concurrent.ExecutionContext
 
-class Init @Inject()(ws: WSClient)(implicit ec: ExecutionContext) extends Controller {
+class Init @Inject()(service: API)(implicit ec: ExecutionContext) extends Controller {
 
-  def get = Action {
-    Ok(views.html.init("Init"))
+  def get = Action.async {
+    for {
+      validQuizCodes <- service.getValidQuizCodes()
+      validQuizOptions <- service.getValidQuizOptions
+    } yield Ok(views.html.init("", "", validQuizCodes, validQuizOptions))
   }
 }

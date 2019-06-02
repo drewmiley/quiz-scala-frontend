@@ -1,5 +1,12 @@
-@(message: String)
+@(question: Question)
 
-<div class="container">
-    @message
+<div id="quiz-question">
+    <h3>@question.question</h3>
+    <div>
+        @{question.answers.map(answer => {
+            <button>
+                {answer}
+            </button>
+        })}
+    </div>
 </div>
