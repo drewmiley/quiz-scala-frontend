@@ -7,7 +7,10 @@ case class Question(
                      question: String = "",
                      answer: String = "",
                      incorrectAnswers: Seq[String] = Seq()
-                   )
+                   ) {
+  val answers: Seq[String] = (incorrectAnswers :+ answer)
+    .sortWith((_, _) => math.random < 0.5)
+}
 
 object Question {
   implicit val reads: Reads[Question] = (
