@@ -1,7 +1,9 @@
-@(message: String)
+@import components.quiz_area
+
+@(code: String, questions: Seq[Question])
 
 @main {
   <div class="container">
-    @message
+    @quiz_area(code, questions)
   </div>
 }
