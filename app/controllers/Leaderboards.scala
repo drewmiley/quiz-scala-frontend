@@ -13,7 +13,7 @@ class Leaderboards @Inject()(service: API)(implicit ec: ExecutionContext) extend
   def get = Action.async {
     service.getLeaderboardsByUser().map { leaderboards =>
       val nameForm = Form("name" -> text())
-      Ok(views.html.leaderboards(leaderboards))
+      Ok(views.html.leaderboards(nameForm, leaderboards))
     }
   }
 }

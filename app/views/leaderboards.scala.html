@@ -1,6 +1,6 @@
 @import components.leaderboard
 
-@(leaderboardsData: Seq[Leaderboard], getLeaderboards: String = "")
+@(nameForm: Form[String], leaderboardsData: Seq[Leaderboard], getLeaderboards: String = "")
 
 @main {
   <div id="leaderboards">
