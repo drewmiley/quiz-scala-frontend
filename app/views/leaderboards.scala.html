@@ -1,10 +1,15 @@
 @import components.leaderboard
+@import helper._
 
-@(leaderboardsData: Seq[Leaderboard], getLeaderboards: String = "")
+@(nameForm: Form[String], leaderboardsData: Seq[Leaderboard], getByUserUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @main {
   <div id="leaderboards">
     <h2>LEADERBOARDS</h2>
+    @form(action = getByUserUrl) {
+      @inputText(nameForm("name"))
+      <input type="submit" value="Get by user">
+    }
     @{leaderboardsData
       .filter(d => d.rows.length > 0)
       .map(d =>
