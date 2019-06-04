@@ -1,10 +1,11 @@
 @import components.{generate_quiz, load_quiz}
+@import helper._
 
-@(loadQuiz: String, generateQuiz: String, validQuizCodes: Seq[String], validQuizOptions: ValidQuizOptions)
+@(codeForm: Form[String], loadQuizUrl: Call, generateQuiz: String, validQuizCodes: Seq[String], validQuizOptions: ValidQuizOptions)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @main {
   <div id="quiz-init">
-    @load_quiz(loadQuiz, validQuizCodes)
+    @load_quiz(codeForm, loadQuizUrl, validQuizCodes)
     @generate_quiz(generateQuiz, validQuizOptions)
   </div>
 }

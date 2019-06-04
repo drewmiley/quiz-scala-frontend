@@ -1,6 +1,12 @@
-@(loadQuiz: String = "", validQuizCodes: Seq[String])
+@import helper._
+
+@(codeForm: Form[String], loadQuizUrl: Call, validQuizCodes: Seq[String])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 <div id="quiz-loader">
     <h4>LOAD QUIZ</h4>
+    @form(action = loadQuizUrl) {
+        @inputText(codeForm("code"))
+        <input type="submit" value="Load Quiz">
+    }
     @validQuizCodes.flatten
 </div>
