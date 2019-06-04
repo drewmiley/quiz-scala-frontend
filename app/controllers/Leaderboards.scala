@@ -10,16 +10,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import scala.concurrent.ExecutionContext
 
 class Leaderboards @Inject()(service: API, cc: ControllerComponents, val messagesApi: MessagesApi)(implicit ec: ExecutionContext) extends Controller with I18nSupport {
-  val nameForm = Form("name" -> text())
+  private val getByUserUrl = routes.Leaderboards.get()
+  private val nameForm = Form("name" -> nonEmptyText)
 
   def get = Action.async { implicit request =>
-    service.getLeaderboardsByUser().map { leaderboards =>
-      Ok(views.html.leaderboards(nameForm, leaderboards))
+    val name = nameForm.bindFromRequest().value.getOrElse("")
+    service.getLeaderboardsByUser(name).map { leaderboards =>
+      Ok(views.html.leaderboards(nameForm, leaderboards, getByUserUrl))
     }
-  }
-
-  def getByUser() = Action { implicit request =>
-    val formData = nameForm.bindFromRequest.get // Careful: BasicForm.form.bindFromRequest returns an Option
-    Ok(formData.toString) // just returning the data because it's an example :)
   }
 }

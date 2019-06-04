@@ -1,14 +1,14 @@
 @import components.leaderboard
 @import helper._
 
-@(nameForm: Form[String], leaderboardsData: Seq[Leaderboard], getLeaderboards: String = "")(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@(nameForm: Form[String], leaderboardsData: Seq[Leaderboard], getByUserUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @main {
   <div id="leaderboards">
     <h2>LEADERBOARDS</h2>
-    @form(action = routes.Leaderboards.getByUser()) {
+    @form(action = getByUserUrl) {
       @inputText(nameForm("name"))
-      <input type="submit" value="Submit">
+      <input type="submit" value="Get by user">
     }
     @{leaderboardsData
       .filter(d => d.rows.length > 0)

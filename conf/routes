@@ -6,7 +6,6 @@
 GET     /                           @controllers.Init.get
 GET     /quiz                       @controllers.Quiz.get
 GET     /leaderboards               @controllers.Leaderboards.get
-GET     /leaderboardsbyuser               @controllers.Leaderboards.getByUser
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
