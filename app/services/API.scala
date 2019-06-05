@@ -33,7 +33,6 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     def getViaApi: Future[Seq[String]] =
       ws.url(getValidQuizCodesEndpoint).get().map { response =>
         val validQuizCodes = Json.parse(response.body).as[Seq[String]]
-        cache.set("code", validQuizCodes.head)
         cache.set("validQuizCodes", validQuizCodes)
         validQuizCodes
       }
@@ -45,6 +44,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   def getQuizByCode(code: String): Future[Seq[Question]] =
     ws.url(getQuizByCodeEndpoint(code)).get().map { response =>
+      cache.set("code", code)
       (Json.parse(response.body) \ "quiz").as[Seq[Question]]
     }
 
