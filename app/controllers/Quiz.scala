@@ -10,8 +10,9 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCacheApi)(implicit ec: ExecutionContext) extends Controller {
 
-  def get = Action.async {
-    cache.get[String]("code") map { code =>
+  def get(code: Option[String]) = Action.async { implicit request =>
+    val quizCode = code map { Some(_) } getOrElse cache.get[String]("code")
+    quizCode map { code =>
       for {
         questions <- service.getQuizByCode(code)
         leaderboard <- service.getLeaderboardByCode(code)

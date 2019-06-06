@@ -1,6 +1,16 @@
-@(loadQuiz: String = "", validQuizCodes: Seq[String])
+@import helper.{select => optionSelect, form}
+
+@(codeForm: Form[String], loadQuizUrl: Call, validQuizCodes: Seq[String])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+
+@quizCodes = @{validQuizCodes.map(d => (d, d))}
 
 <div id="quiz-loader">
     <h4>LOAD QUIZ</h4>
-    @validQuizCodes.flatten
+    @form(action = loadQuizUrl) {
+        @optionSelect(
+            field = codeForm("code"),
+            options = quizCodes
+        )
+        <input type="submit" value="Load Quiz">
+    }
 </div>

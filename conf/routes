@@ -4,7 +4,8 @@
 
 # Home page
 GET     /                           @controllers.Init.get
-GET     /quiz                       @controllers.Quiz.get
+GET     /load                       @controllers.Init.loadQuiz
+GET     /quiz                       @controllers.Quiz.get(code: Option[String])
 GET     /leaderboards               @controllers.Leaderboards.get
 
 # Map static resources from the /public folder to the /assets URL path
