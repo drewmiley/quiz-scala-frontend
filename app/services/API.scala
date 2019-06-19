@@ -4,7 +4,7 @@ import javax.inject.Inject
 import models._
 import play.api.Configuration
 import play.api.cache.{NamedCache, SyncCacheApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.libs.ws._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -14,6 +14,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
   private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
+  private def generateQuizEndpoint = s"${endpoint}newquiz"
   private def getQuizByCodeEndpoint(code: String) = s"${endpoint}quiz/$code"
   private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/$code"
   private def getLeaderboardsByUserEndpoint(user: String = "") =
@@ -42,8 +43,23 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
-  def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[Option[String]] = {
-    Future.successful(cache.get[String]("code"))
+  def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[String] = {
+    generateQuiz map { gQuiz =>
+      val generatedQuiz = ws.url(generateQuizEndpoint)
+        .post(
+          JsObject(Seq("options" -> JsObject(
+            Map(
+              "amount" -> JsString(gQuiz.amount),
+              "difficulty" -> JsString(gQuiz.difficulty),
+              "category" -> JsString(gQuiz.category),
+              "type" -> JsString(gQuiz.types)
+            )
+          )))
+        )
+      generatedQuiz.map { response =>
+        (Json.parse(response.body) \ "code").as[String]
+      }
+    } getOrElse Future.successful("")
   }
 
   def getQuizByCode(code: String): Future[Seq[Question]] =
