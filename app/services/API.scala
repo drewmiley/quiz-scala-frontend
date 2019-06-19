@@ -44,19 +44,8 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
   }
 
   def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[String] = {
-    generateQuiz map { gQuiz =>
-      val generatedQuiz = ws.url(generateQuizEndpoint)
-        .post(
-          JsObject(Seq("options" -> JsObject(
-            Map(
-              "amount" -> JsString(gQuiz.amount),
-              "difficulty" -> JsString(gQuiz.difficulty),
-              "category" -> JsString(gQuiz.category),
-              "type" -> JsString(gQuiz.types)
-            )
-          )))
-        )
-      generatedQuiz.map { response =>
+    generateQuiz map { _.toRequestBody } map { req =>
+      ws.url(generateQuizEndpoint).post(req).map { response =>
         (Json.parse(response.body) \ "code").as[String]
       }
     } getOrElse Future.successful("")
