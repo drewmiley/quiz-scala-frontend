@@ -1,6 +1,11 @@
-@(generateQuiz: String = "", validQuizOptions: ValidQuizOptions)
+@import helper.{select => optionSelect, form}
+
+@(generateForm: Form[String], generateQuizUrl: Call, validQuizOptions: ValidQuizOptions)
 
 <div id="quiz-generator">
     <h4>GENERATE QUIZ</h4>
+    @form(action = generateQuizUrl) {
+        <input type="submit" value="Generate Quiz">
+    }
     @validQuizOptions.toString
 </div>
