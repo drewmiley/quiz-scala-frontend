@@ -42,6 +42,10 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
+  def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[Option[String]] = {
+    Future.successful(cache.get[String]("code"))
+  }
+
   def getQuizByCode(code: String): Future[Seq[Question]] =
     ws.url(getQuizByCodeEndpoint(code)).get().map { response =>
       cache.set("code", code)

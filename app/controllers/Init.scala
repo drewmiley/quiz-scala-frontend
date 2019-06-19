@@ -19,9 +19,7 @@ class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: Ex
     "category" -> nonEmptyText,
   "difficulty" -> nonEmptyText,
   "types" -> nonEmptyText
-    ) {
-      (amount, category, difficulty, types) => GenerateQuiz(amount, category, difficulty, types)
-    } {
+    ) { GenerateQuiz.apply } {
       gQuiz => Some((gQuiz.amount, gQuiz.category, gQuiz.difficulty, gQuiz.types))
     }
   )
@@ -42,8 +40,7 @@ class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: Ex
 
   def generateQuiz = Action.async { implicit request =>
     val generateQuiz = generateQuizForm.bindFromRequest().value
-    val blah: Option[String] = generateQuiz map { _.amount }
-    Future.successful(Redirect(routes.Quiz.get(blah)))
+    service.generateQuiz(generateQuiz) map { code =>  Redirect(routes.Quiz.get(code)) }
   }
 
   def loadQuiz = Action.async { implicit request =>
