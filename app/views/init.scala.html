@@ -1,9 +1,10 @@
 @import components.{generate_quiz, load_quiz}
 @import helper._
+@import models.GenerateQuiz
 
 @(
   codeForm: Form[String], loadQuizUrl: Call,
-  generateForm: Form[String], generateQuizUrl: Call,
+  generateForm: Form[GenerateQuiz], generateQuizUrl: Call,
   validQuizCodes: Seq[String], validQuizOptions: ValidQuizOptions
 )(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 

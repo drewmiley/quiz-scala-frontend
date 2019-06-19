@@ -1,6 +1,7 @@
 package controllers
 
 import javax.inject.Inject
+import models.GenerateQuiz
 import play.api.data._
 import play.api.data.Forms._
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -11,9 +12,21 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: ExecutionContext) extends Controller with I18nSupport {
 
+  val loadQuizForm: Form[String] = Form("code" -> nonEmptyText)
+  val generateQuizForm: Form[GenerateQuiz] = Form(
+    mapping(
+      "amount" -> nonEmptyText,
+    "category" -> nonEmptyText,
+  "difficulty" -> nonEmptyText,
+  "types" -> nonEmptyText
+    ) {
+      (amount, category, difficulty, types) => GenerateQuiz(amount, category, difficulty, types)
+    } {
+      gQuiz => Some((gQuiz.amount, gQuiz.category, gQuiz.difficulty, gQuiz.types))
+    }
+  )
+
   def get = Action.async { implicit request =>
-    val loadQuizForm: Form[String] = Form("code" -> nonEmptyText)
-    val generateQuizForm: Form[String] = Form("code" -> nonEmptyText)
     for {
       validQuizCodes <- service.getValidQuizCodes()
       validQuizOptions <- service.getValidQuizOptions
@@ -28,10 +41,12 @@ class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: Ex
   }
 
   def generateQuiz = Action.async { implicit request =>
-    Future.successful(Redirect(routes.Quiz.get(Form("code" -> nonEmptyText).bindFromRequest().value)))
+    val generateQuiz = generateQuizForm.bindFromRequest().value
+    val blah: Option[String] = generateQuiz map { _.amount }
+    Future.successful(Redirect(routes.Quiz.get(blah)))
   }
 
   def loadQuiz = Action.async { implicit request =>
-    Future.successful(Redirect(routes.Quiz.get(Form("code" -> nonEmptyText).bindFromRequest().value)))
+    Future.successful(Redirect(routes.Quiz.get(loadQuizForm.bindFromRequest().value)))
   }
 }

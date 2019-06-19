@@ -1,6 +1,7 @@
 @import helper.{select => optionSelect, form}
+@import models.GenerateQuiz
 
-@(generateForm: Form[String], generateQuizUrl: Call, validQuizOptions: ValidQuizOptions)
+@(generateForm: Form[GenerateQuiz], generateQuizUrl: Call, validQuizOptions: ValidQuizOptions)
 
 <div id="quiz-generator">
     <h4>GENERATE QUIZ</h4>
