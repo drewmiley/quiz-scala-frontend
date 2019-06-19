@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           @controllers.Init.get
+GET     /generate                   @controllers.Init.generateQuiz
 GET     /load                       @controllers.Init.loadQuiz
 GET     /quiz                       @controllers.Quiz.get(code: Option[String])
 GET     /leaderboards               @controllers.Leaderboards.get

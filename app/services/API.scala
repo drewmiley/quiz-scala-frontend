@@ -4,7 +4,7 @@ import javax.inject.Inject
 import models._
 import play.api.Configuration
 import play.api.cache.{NamedCache, SyncCacheApi}
-import play.api.libs.json.Json
+import play.api.libs.json.{JsObject, JsString, JsValue, Json}
 import play.api.libs.ws._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -14,6 +14,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
 
   private val getValidQuizOptionsEndpoint = s"${endpoint}quizoptions"
   private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
+  private def generateQuizEndpoint = s"${endpoint}newquiz"
   private def getQuizByCodeEndpoint(code: String) = s"${endpoint}quiz/$code"
   private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/$code"
   private def getLeaderboardsByUserEndpoint(user: String = "") =
@@ -40,6 +41,14 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
       case (false, Some(validQuizCodes)) => Future.successful(validQuizCodes)
       case _ => getViaApi
     }
+  }
+
+  def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[String] = {
+    generateQuiz map { _.toRequestBody } map { req =>
+      ws.url(generateQuizEndpoint).post(req).map { response =>
+        (Json.parse(response.body) \ "code").as[String]
+      }
+    } getOrElse Future.successful("")
   }
 
   def getQuizByCode(code: String): Future[Seq[Question]] =
