@@ -16,9 +16,9 @@ class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: Ex
   val generateQuizForm: Form[GenerateQuiz] = Form(
     mapping(
       "amount" -> nonEmptyText,
-    "category" -> nonEmptyText,
-  "difficulty" -> nonEmptyText,
-  "types" -> nonEmptyText
+      "category" -> nonEmptyText,
+      "difficulty" -> nonEmptyText,
+      "types" -> nonEmptyText
     ) { GenerateQuiz.apply } {
       gQuiz => Some((gQuiz.amount, gQuiz.category, gQuiz.difficulty, gQuiz.types))
     }
