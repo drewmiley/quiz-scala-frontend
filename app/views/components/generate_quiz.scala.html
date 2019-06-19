@@ -1,12 +1,24 @@
-@import helper.{select => optionSelect, form}
+@import helper.{select => optionSelect, form, inputText}
 @import models.GenerateQuiz
 
-@(generateForm: Form[GenerateQuiz], generateQuizUrl: Call, validQuizOptions: ValidQuizOptions)
+@(generateForm: Form[GenerateQuiz], generateQuizUrl: Call, validQuizOptions: ValidQuizOptions)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 <div id="quiz-generator">
     <h4>GENERATE QUIZ</h4>
     @form(action = generateQuizUrl) {
+        @inputText(generateForm("amount"))
+        @optionSelect(
+            field = generateForm("category"),
+            options = validQuizOptions.category.map(d => (d, d))
+        )
+        @optionSelect(
+            field = generateForm("difficulty"),
+            options = validQuizOptions.difficulty.map(d => (d, d))
+        )
+        @optionSelect(
+            field = generateForm("types"),
+            options = validQuizOptions.types.map(d => (d, d))
+        )
         <input type="submit" value="Generate Quiz">
     }
-    @validQuizOptions.toString
 </div>
