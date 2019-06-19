@@ -1,10 +1,15 @@
 @import components.{quiz_area, leaderboard => lboard}
+@import helper._
 
-@(code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard())
+@(nameForm: Form[String], code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard(), getQuizUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @main {
   <div class="container">
     @quiz_area(code, questions)
+    @form(action = getQuizUrl) {
+      @inputText(nameForm("name"))
+      <input type="submit" value="Submit Answers">
+    }
     @lboard(leaderboard)
   </div>
 }
