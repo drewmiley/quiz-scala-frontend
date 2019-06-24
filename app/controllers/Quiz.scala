@@ -1,7 +1,7 @@
 package controllers
 
 import javax.inject.Inject
-import models.{Leaderboard, Question, SubmitAnswers}
+import models.{Leaderboard, SubmitAnswers}
 import play.api.cache.{NamedCache, SyncCacheApi}
 import play.api.data.Form
 import play.api.data.Forms._
@@ -15,8 +15,8 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
 
   val submitAnswersForm: Form[SubmitAnswers] = Form(
     mapping(
-      "code" -> nonEmptyText,
-      "name" -> nonEmptyText,
+      "code" -> text(minLength = 1),
+      "name" -> text(minLength = 1),
       "questions" -> seq(nonEmptyText),
       "answers" -> seq(nonEmptyText)
     ) { SubmitAnswers.apply } {
@@ -36,6 +36,9 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
 
   def submitAnswers = Action.async { implicit request =>
     val submitAnswers = submitAnswersForm.bindFromRequest().value
-    service.submitAnswers(submitAnswers) map { code =>  Redirect(routes.Quiz.get(Some(code))) }
+    val v = submitAnswers map service.submitAnswers
+    val c = v map { c => c map { code => Redirect(routes.Quiz.get(Some(code))) }}
+    val d = c getOrElse Future.successful(Redirect(routes.Quiz.get(None)))
+    d
   }
 }

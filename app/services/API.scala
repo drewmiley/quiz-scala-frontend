@@ -44,6 +44,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
+  // TODO: This should not take in an option
   def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[String] = {
     generateQuiz map { _.toRequestBody } map { req =>
       ws.url(generateQuizEndpoint).post(req).map { response =>
@@ -58,13 +59,11 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
       (Json.parse(response.body) \ "quiz").as[Seq[Question]]
     }
 
-  def submitAnswers(submitAnswers: Option[SubmitAnswers]): Future[String] = {
-    submitAnswers map { sAnswers =>
-      val req = sAnswers.toRequestBody
-      ws.url(submitAnswersEndpoint(sAnswers.code, sAnswers.name)).post(req).map { response =>
-        (Json.parse(response.body) \ "code").as[String]
-      }
-    } getOrElse Future.successful("")
+  def submitAnswers(submitAnswers: SubmitAnswers): Future[String] = {
+    val req = submitAnswers.toRequestBody
+    ws.url(submitAnswersEndpoint(submitAnswers.code, submitAnswers.name)).post(req).map { response =>
+      (Json.parse(response.body) \ "code").as[String]
+    }
   }
 
   def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] =
