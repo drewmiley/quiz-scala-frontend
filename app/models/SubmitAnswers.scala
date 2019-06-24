@@ -2,13 +2,12 @@ package models
 
 import play.api.libs.json._
 
-case class SubmitAnswers(code: String, name: String, questions: Seq[String], answers: Seq[String]) {
-  // TODO: This should use QuestionAnswer model
+case class SubmitAnswers(code: String, name: String, questionAnswers: Seq[(String, String)]) {
   val toRequestBody: JsObject = JsObject(Seq("answers" -> JsArray(
-    questions.zipWithIndex map { qI => JsObject(
+    questionAnswers map { qa => JsObject(
       Map(
-        "question" -> JsString(qI._1),
-        "answer" -> JsString(answers(qI._2))
+        "question" -> JsString(qa._1),
+        "answer" -> JsString(qa._2)
       )
     )}
   )))

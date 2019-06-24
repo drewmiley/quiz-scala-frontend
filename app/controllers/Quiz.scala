@@ -19,8 +19,10 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
       "name" -> text(minLength = 1),
       "questions" -> seq(nonEmptyText),
       "answers" -> seq(nonEmptyText)
-    ) { SubmitAnswers.apply } {
-      submitAnswers => Some(submitAnswers.code, submitAnswers.name, submitAnswers.questions, submitAnswers.answers)
+    ) { (code, name, questions, answers) => {
+      SubmitAnswers(code, name, questions zip answers)
+    } } {
+      submitAnswers => Some(submitAnswers.code, submitAnswers.name, submitAnswers.questionAnswers.map(_._1), submitAnswers.questionAnswers.map(_._2))
     }
   )
 
