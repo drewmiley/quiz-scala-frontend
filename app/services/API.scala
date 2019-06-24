@@ -59,8 +59,10 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
 
   def submitAnswers(submitAnswers: Option[SubmitAnswers]): Future[String] = {
-    submitAnswers map { _.toRequestBody } map { req =>
-      Future.successful(req)
+    submitAnswers map { sAnswers =>
+      val req = sAnswers.toRequestBody
+      println(req)
+      Future.successful(sAnswers.code)
     } getOrElse Future.successful("")
   }
 
