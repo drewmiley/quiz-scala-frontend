@@ -40,7 +40,11 @@ class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: Ex
 
   def generateQuiz = Action.async { implicit request =>
     val generateQuiz = generateQuizForm.bindFromRequest().value
-    service.generateQuiz(generateQuiz) map { code =>  Redirect(routes.Quiz.get(Some(code))) }
+    generateQuizForm.bindFromRequest().value map { gq =>
+      for {
+        code <- service.generateQuiz(gq)
+      } yield Redirect(routes.Quiz.get(Some(code)))
+    } getOrElse Future.successful(Redirect(routes.Init.get()))
   }
 
   def loadQuiz = Action.async { implicit request =>
