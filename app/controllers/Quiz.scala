@@ -36,11 +36,14 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
 
   def submitAnswers = Action.async { implicit request =>
     val submitAnswers = submitAnswersForm.bindFromRequest().value
-    // TODO: Can explicit use of Some and None be removed
-    submitAnswers map { sa =>
-      for {
-        code <- service.submitAnswers(sa)
-      } yield Redirect(routes.Quiz.get(Some(code)))
-    } getOrElse Future.successful(Redirect(routes.Quiz.get(None)))
+    val apiResponse = submitAnswers map service.submitAnswers
+    for {
+      code <- {
+        apiResponse match {
+          case Some(f) => f.map(Some(_))
+          case None => Future.successful(None)
+        }
+      }
+    } yield Redirect(routes.Quiz.get(code))
   }
 }
