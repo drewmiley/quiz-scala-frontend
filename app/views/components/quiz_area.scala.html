@@ -7,6 +7,7 @@
     <h4 id="quiz-code">Code: @code</h4>
     @for(index <- 0 until questions.size){
         <h3>@questions(index).question</h3>
+        <input type="hidden" name="questions[]" value="@questions(index).question" />
         @optionSelect(
             field = submitAnswersForm("answers[]"),
             options = questions(index).answers.map(d => (d, d))
