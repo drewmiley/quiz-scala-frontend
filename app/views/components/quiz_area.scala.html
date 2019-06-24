@@ -1,8 +1,15 @@
-@(code: String, questions: Seq[Question])
+@import helper.{select => optionSelect}
+@import models.SubmitAnswers
+
+@(submitAnswersForm: Form[SubmitAnswers], code: String, questions: Seq[Question])(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 <div id="quiz-area">
     <h4 id="quiz-code">Code: @code</h4>
-    @{questions.map(d =>
-        question(d)
-    )}
+    @for(index <- 0 until questions.size){
+        <h3>@questions(index).question</h3>
+        @optionSelect(
+            field = submitAnswersForm("questionAnswers[]"),
+            options = questions(index).answers.map(d => (d, d))
+        )
+    }
 </div>

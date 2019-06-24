@@ -6,7 +6,10 @@
 <div id="quiz-generator">
     <h4>GENERATE QUIZ</h4>
     @form(action = generateQuizUrl) {
-        @inputText(generateForm("amount"))
+        @inputText(
+            field = generateForm("amount"),
+            'placeholder -> "Amount"
+        )
         @optionSelect(
             field = generateForm("category"),
             options = validQuizOptions.category.map(d => (d, d))
