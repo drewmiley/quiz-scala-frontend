@@ -44,13 +44,11 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
-  // TODO: This should not take in an option
-  def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[String] = {
-    generateQuiz map { _.toRequestBody } map { req =>
-      ws.url(generateQuizEndpoint).post(req).map { response =>
-        (Json.parse(response.body) \ "code").as[String]
-      }
-    } getOrElse Future.successful("")
+  def generateQuiz(generateQuiz: GenerateQuiz): Future[String] = {
+    val req = generateQuiz.toRequestBody
+    ws.url(generateQuizEndpoint).post(req).map { response =>
+      (Json.parse(response.body) \ "code").as[String]
+    }
   }
 
   def getQuizByCode(code: String): Future[Seq[Question]] =
