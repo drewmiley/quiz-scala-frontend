@@ -1,3 +1,7 @@
 nav {
     background: lightgray;
 }
+
+dt, .info {
+    display: none;
+}

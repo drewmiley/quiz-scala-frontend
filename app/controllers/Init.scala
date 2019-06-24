@@ -15,7 +15,7 @@ class Init @Inject()(service: API, val messagesApi: MessagesApi)(implicit ec: Ex
   val loadQuizForm: Form[String] = Form("code" -> nonEmptyText)
   val generateQuizForm: Form[GenerateQuiz] = Form(
     mapping(
-      "amount" -> nonEmptyText,
+      "amount" -> text(minLength = 1),
       "category" -> nonEmptyText,
       "difficulty" -> nonEmptyText,
       "types" -> nonEmptyText

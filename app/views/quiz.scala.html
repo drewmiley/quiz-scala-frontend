@@ -1,13 +1,18 @@
 @import components.{quiz_area, leaderboard => lboard}
 @import helper._
+@import models.SubmitAnswers
 
-@(nameForm: Form[String], code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard(), getQuizUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@(submitAnswersForm: Form[SubmitAnswers], code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard(), submitAnswersUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @main {
   <div class="container">
-    @quiz_area(code, questions)
-    @form(action = getQuizUrl) {
-      @inputText(nameForm("name"))
+    @form(action = CSRF(submitAnswersUrl)) {
+      <input type="hidden" name="code" value=@code />
+      @quiz_area(submitAnswersForm, code, questions)
+      @inputText(
+        field = submitAnswersForm("name"),
+        'placeholder -> "Name"
+      )
       <input type="submit" value="Submit Answers">
     }
     @lboard(leaderboard)

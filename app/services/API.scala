@@ -4,7 +4,7 @@ import javax.inject.Inject
 import models._
 import play.api.Configuration
 import play.api.cache.{NamedCache, SyncCacheApi}
-import play.api.libs.json.{JsObject, JsString, JsValue, Json}
+import play.api.libs.json.Json
 import play.api.libs.ws._
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -16,6 +16,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
   private val getValidQuizCodesEndpoint = s"${endpoint}quizcodes"
   private def generateQuizEndpoint = s"${endpoint}newquiz"
   private def getQuizByCodeEndpoint(code: String) = s"${endpoint}quiz/$code"
+  private def submitAnswersEndpoint(code: String, user: String) = s"${endpoint}answers/$code/$user"
   private def getLeaderboardByCodeEndpoint(code: String) = s"${endpoint}leaderboard/$code"
   private def getLeaderboardsByUserEndpoint(user: String = "") =
     s"${endpoint}leaderboards${if(user.nonEmpty) s"?user=$user" else ""}"
@@ -43,6 +44,7 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
     }
   }
 
+  // TODO: This should not take in an option
   def generateQuiz(generateQuiz: Option[GenerateQuiz]): Future[String] = {
     generateQuiz map { _.toRequestBody } map { req =>
       ws.url(generateQuizEndpoint).post(req).map { response =>
@@ -56,6 +58,13 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
       cache.set("code", code)
       (Json.parse(response.body) \ "quiz").as[Seq[Question]]
     }
+
+  def submitAnswers(submitAnswers: SubmitAnswers): Future[String] = {
+    val req = submitAnswers.toRequestBody
+    ws.url(submitAnswersEndpoint(submitAnswers.code, submitAnswers.name)).post(req).map { response =>
+      (Json.parse(response.body) \ "code").as[String]
+    }
+  }
 
   def getLeaderboardByCode(code: String): Future[Seq[LeaderboardRow]] =
     ws.url(getLeaderboardByCodeEndpoint(code)).get().map { response =>
