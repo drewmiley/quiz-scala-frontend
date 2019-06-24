@@ -61,8 +61,9 @@ class API @Inject()(ws: WSClient, @NamedCache("session-cache") cache: SyncCacheA
   def submitAnswers(submitAnswers: Option[SubmitAnswers]): Future[String] = {
     submitAnswers map { sAnswers =>
       val req = sAnswers.toRequestBody
-      println(req)
-      Future.successful(sAnswers.code)
+      ws.url(submitAnswersEndpoint(sAnswers.code, sAnswers.name)).post(req).map { response =>
+        (Json.parse(response.body) \ "code").as[String]
+      }
     } getOrElse Future.successful("")
   }
 
