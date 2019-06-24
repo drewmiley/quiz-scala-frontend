@@ -7,6 +7,7 @@
 @main {
   <div class="container">
     @form(action = CSRF(submitAnswersUrl)) {
+      <input type="hidden" name="code" value=@code />
       @quiz_area(submitAnswersForm, code, questions)
       @inputText(
         field = submitAnswersForm("name"),

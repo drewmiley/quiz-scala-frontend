@@ -8,7 +8,7 @@
     @for(index <- 0 until questions.size){
         <h3>@questions(index).question</h3>
         @optionSelect(
-            field = submitAnswersForm("questionAnswers[]"),
+            field = submitAnswersForm("answers[]"),
             options = questions(index).answers.map(d => (d, d))
         )
     }

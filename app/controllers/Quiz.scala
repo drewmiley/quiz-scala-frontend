@@ -15,10 +15,11 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
 
   val submitAnswersForm: Form[SubmitAnswers] = Form(
     mapping(
+      "code" -> nonEmptyText,
       "name" -> nonEmptyText,
-      "questionAnswers" -> seq(nonEmptyText)
-    ) { (name, questionAnswers) => SubmitAnswers(name, questionAnswers) } {
-      submitAnswers => Some(submitAnswers.name, submitAnswers.questionAnswers)
+      "answers" -> seq(nonEmptyText)
+    ) { SubmitAnswers.apply } {
+      submitAnswers => Some(submitAnswers.code, submitAnswers.name, submitAnswers.answers)
     }
   )
 
@@ -34,6 +35,6 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
 
   def submitAnswers = Action.async { implicit request =>
     val submitAnswers = submitAnswersForm.bindFromRequest().value
-    Future.successful(InternalServerError(submitAnswers.toString))
+    service.submitAnswers(submitAnswers) map { code =>  Redirect(routes.Quiz.get(Some(code))) }
   }
 }
