@@ -28,7 +28,12 @@ class Quiz @Inject()(service: API, @NamedCache("session-cache") cache: SyncCache
       for {
         questions <- service.getQuizByCode(qCode)
         leaderboard <- service.getLeaderboardByCode(qCode)
-      } yield Ok(views.html.quiz(submitAnswersForm, qCode, questions, Leaderboard(qCode, leaderboard), routes.Quiz.get(code)))
+      } yield Ok(views.html.quiz(submitAnswersForm, qCode, questions, Leaderboard(qCode, leaderboard), routes.Quiz.submitAnswers))
     } getOrElse { Future.successful(InternalServerError("No quiz found")) }
+  }
+
+  def submitAnswers = Action.async { implicit request =>
+    val submitAnswers = submitAnswersForm.bindFromRequest().value
+    Future.successful(InternalServerError(submitAnswers.toString))
   }
 }

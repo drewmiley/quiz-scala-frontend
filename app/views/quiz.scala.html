@@ -2,11 +2,11 @@
 @import helper._
 @import models.SubmitAnswers
 
-@(submitAnswersForm: Form[SubmitAnswers], code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard(), getQuizUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
+@(submitAnswersForm: Form[SubmitAnswers], code: String = "", questions: Seq[Question] = Seq(), leaderboard: Leaderboard = Leaderboard(), submitAnswersUrl: Call)(implicit request: RequestHeader, messagesProvider: MessagesProvider)
 
 @main {
   <div class="container">
-    @form(action = getQuizUrl) {
+    @form(action = CSRF(submitAnswersUrl)) {
       @quiz_area(submitAnswersForm, code, questions)
       @inputText(
         field = submitAnswersForm("name"),
